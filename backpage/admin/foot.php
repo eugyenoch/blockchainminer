@@ -1,0 +1,1 @@
+ <div class="pull-right hidden-xs">© 2019 - <?= date('Y');?> Earthminers Version 1.2</div>
