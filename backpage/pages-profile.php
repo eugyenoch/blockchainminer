@@ -91,7 +91,7 @@ if(isset($_POST['uWallet'])){
   $usdt = sanitize($_POST['usdt']);
   //$token = sanitize($_POST['token']);
 
-  $sql_wallet_update = "UPDATE `wallet` SET `bitcoin`='$btc',`ethereum`='$eth',`binance`='$bnb',`usdt`='$usdt' WHERE `wallet`.`user_email` = '$user_email'";
+  $sql_wallet_update = "UPDATE `wallet` SET `bitcoin`='$btc',`ethereum`='$eth',`binance`='$bnb',`usdt`='$usdt' WHERE `user_email` = '$sessmail'";
 
   if($dbc->query($sql_wallet_update)===TRUE){$toast = "success";header('Refresh:1');}
   else{$toast = "fail";}
@@ -131,8 +131,6 @@ if(in_array($file_ext,$extensions)=== false){
 }if(isset($_POST["uPhoto"]) && empty($_FILES['photo']['name'])){
         echo "<script>alert('Select a valid image not more than 500KB')</script>";
     }
-
-$dbc->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -195,7 +193,7 @@ $dbc->close();
   <div class="content-wrapper"> 
     <!-- Content Header (Page header) --> 
     <div class="content-header sty-one">
-      <h1 class="text-black">Profile Page</h1>
+      <h3 class="text-black">Profile Page | <?php if(isset($sessEmail)){echo $sessEmail;} ?></h3>
       <ol class="breadcrumb">
         <li><a href="user.php">Home</a></li>
         <li class="sub-bread"><i class="fa fa-angle-right"></i> Pages</li>
@@ -244,11 +242,9 @@ $dbc->close();
               <!-- Nav tabs -->
               <ul class="nav nav-tabs profile-tab" role="tablist">
                 <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#home" role="tab" aria-expanded="true">Activity</a> </li>
-                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab" aria-expanded="false">Profile</a> </li>
-                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#settings" role="tab" aria-expanded="false">Settings</a> </li>
-               <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#security" role="tab" aria-expanded="false">Security</a> </li>
-               <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#wallet" role="tab" aria-expanded="false">Wallet</a> </li>
-               <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#upload" role="tab" aria-expanded="false">Upload</a> </li>
+                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab" aria-expanded="true">Profile</a> </li>
+                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#settings" role="tab" aria-expanded="true">Settings</a> </li>
+               <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#upload" role="tab" aria-expanded="true">Upload</a> </li>
               </ul>
               <!-- Tab panes -->
               <div class="tab-content">
@@ -260,15 +256,50 @@ $dbc->close();
                       </div>
                       <div class="col-lg-10">
                         <div class="mail-contnet">
-                          <h5><span id="activity">Account Activity</span></h5>
-                         <p>Account activity would be displayed here</p>
-                         <h5><span id="notification">Notification</span></h5>
-                         <p>Announcements will be displayed here</p>
+                          <h5><span id="activity">Account Activity Center</span></h5>
+                   <p><ul>
+        <?php $funded = "SELECT `fundname` AS `order` FROM `fund` WHERE `user_email`='$sessEmail' AND `status`='Pending' ORDER BY `request_date` DESC LIMIT 1";
+          $funded_query = $dbc->query($funded);
+          $funded_display = mysqli_fetch_assoc($funded_query);
+
+         if($funded_display){
+          $funded_row = $funded_display['order']; 
+          if(isset($fund_info['fundname'])&& $fund_info['fundname']!==null){
+            echo "<li><span class=''>Your request for {$funded_row} on {$fund_info['request_date']} is pending.</span></li>";
+          }
+        }else{echo "<li><span class=''>Your request for {$funded_row} on {$fund_info['request_date']} is Approved.</span></li>";}?>
+        <div class="p-t-3"></div>
+    <?php $deposited = "SELECT `amount` AS `lastdeposit` FROM `fund` WHERE `user_email`='$sessEmail' AND `status`='Pending' ORDER BY `request_date` DESC LIMIT 1";
+            $deposit_query = $dbc->query($deposited);
+            $deposit_display = mysqli_fetch_assoc($deposit_query);
+
+           if($deposit_display){
+            $deposited_row = $deposit_display['lastdeposit'];
+            if(isset($fund_info['amount'])&& $fund_info['amount']!==null){
+              echo "<li><span class=''>Your request for funding, up to {$deposited_row} on {$fund_info['request_date']} is Pending.</span></li>";
+            }
+          }else{echo "<li><span class=''>Your request for funding, up to {$deposited_row} on {$fund_info['request_date']} is Approved.</span></li>";} 
+          ?>  
+          <div class="p-t-3"></div>
+          <?php $withdrawn = "SELECT `wamount` AS `lastWithdraw` FROM `withdraw` WHERE `user_email`='$sessEmail' AND `wstatus`='Pending' ORDER BY `withdraw_request_date` DESC LIMIT 1";
+                $withdraw_query = $dbc->query($withdrawn);
+                $withdraw_display = mysqli_fetch_assoc($withdraw_query);
+
+               if($withdraw_display){
+                $withdrawn_row = $withdraw_display['lastWithdraw']; 
+                 if(isset($withdraw_info['wamount'])&& $withdraw_info['wamount']!==null){
+                  echo "<li><span class=''>Your request for withdrawal, up to {$withdrawn_row} on {$withdraw_info['withdraw_request_date']} is Pending.</span></li>";
+                }
+              }else{echo "<li><span class=''>Your request for withdrawal, up to {$withdrawn_row} on {$withdraw_info['withdraw_request_date']} is Approved.</span></li>";} ?>     
+</ul>
+                   </p>
+                         <h5><span id="notification">Notification Center</span></h5>
+                         <p>Sitewide announcements will be displayed here</p>
                           <div class="row">
-                            <div class="col-lg-3 col-xs-4 m-bot-2"><img src="dist/img/img7.jpg" alt="user" class="img-responsive img-rounded"></div>
-                            <div class="col-lg-3 col-xs-4 m-bot-2"><img src="dist/img/img8.jpg" alt="user" class="img-responsive img-rounded"></div>
-                            <div class="col-lg-3 col-xs-4 m-bot-2"><img src="dist/img/img9.jpg" alt="user" class="img-responsive img-rounded"></div>
-                            <div class="col-lg-3 col-xs-4 m-bot-2"><img src="dist/img/img10.jpg" alt="user" class="img-responsive img-rounded"></div>
+                            <div class="col-lg-3 col-xs-4 m-bot-2"></div>
+                            <div class="col-lg-3 col-xs-4 m-bot-2"></div>
+                            <div class="col-lg-3 col-xs-4 m-bot-2"></div>
+                            <div class="col-lg-3 col-xs-4 m-bot-2"></div>
                           </div>
                           <div class="like-comm m-t-1"></div>
                         </div>
@@ -297,7 +328,7 @@ $dbc->close();
                   </div>
                 </div>
                 <!--second tab-->
-                <div class="tab-pane" id="profile" role="tabpanel" aria-expanded="false">
+                <div class="tab-pane" id="profile" role="tabpanel" aria-expanded="true">
                   <div class="card-body">
                     <div class="row">
                       <div class="col-lg-3 col-xs-6 b-r"> <strong>Full Name</strong> <br>
@@ -307,27 +338,57 @@ $dbc->close();
                         <p class="text-muted"><?php if(isset($phone) && $phone!==null){echo $phone;}else{echo "Check that your phone number is set";}?></p>
                       </div>
                       <div class="col-lg-3 col-xs-6 b-r"> <strong>Email</strong> <br>
-                        <p class="text-muted"><?php if(isset($user_email) && $user_email!==null){echo $user_email;}else{echo "Check that your email is set";}?></p>
+                        <p class="text-muted"><?php if(isset($user_email) && $user_email!==null){echo $user_email;}else{echo "Check that your email is set";}?></p><?php if(isset($fund_info['affid'])&&$fund_info['affid']!==null){echo $fund_info['affid'];} ?>
+                      </div>
+                      <div class="col-lg-3 col-xs-6 b-r"> <strong>User ID</strong> <br>
+                        <p class="text-muted"><?php if(isset($fund_info['affid'])&&$fund_info['affid']!==null){echo $fund_info['affid'];}else{echo "User ID is not set.";}?></p>
                       </div>
                     </div>
                     <hr>
                     <h3>Your Bio</h3>
                     <p><?php if(isset($bio) && $bio!==null){echo $bio;}else{echo "Check that your bio is set";}?> </p>
+
+                <div class="table-responsive">
+                <table class="table table-bordered table-hover" data-name="cool-table">
+                  <caption class="h5" style="caption-side:top;">Your Wallets</caption>
+                  <thead class="thead-dark">
+                  <tr>
+                    <th scope="col"><h6 class="text-center">BTC Wallet</h6></th>
+                    <th scope="col"><h6 class="text-center">BNB Wallet</h6></th>
+                    <th scope="col"><h6 class="text-center">ETH Wallet</h6></th>
+                    <th scope="col"><h6 class="text-center">USDT Wallet</h6></th>
+                  </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <td colspan="4"><center><a class="btn btn-outline-dark  btn-lg" href="user-update.php#wallets">Update Wallets&nbsp;<i class="ti-wallet"></i></a></center></td>
+                    </tr>
+                  </tfoot>
+                  <tbody>
+                  <tr>
+                    <td><?php if(isset($wallet_info['bitcoin']) && $wallet_info['bitcoin']!==null){echo $wallet_info['bitcoin'];}else{echo "N/A";}?></td>
+                    <td><?php if(isset($wallet_info['ethereum']) && $wallet_info['ethereum']!==null){echo $wallet_info['ethereum'];}else{echo "N/A";}?></td>
+                    <td><?php if(isset($wallet_info['binance']) && $wallet_info['binance']!==null){echo $wallet_info['binance'];}else{echo "N/A";}?></td>
+                    <td><?php if(isset($wallet_info['usdt']) && $wallet_info['usdt']!==null){echo $wallet_info['usdt'];}else{echo "N/A";}?></td>
+                  </tr>
+                </tbody>
+                </table>
+              </div>
                     <h4 class="font-medium m-t-3">Your Profits and Losses Summary</h4>
                     <hr>
                     <div>
-                      <h6 class="m-t-3">Profits <span class="pull-right">80%</span></h6>
+                      <h6 class="m-t-3">Profits <span class="pull-right">N/A</span></h6>
                       <div class="progress">
-                        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width:80%; height:6px;"> <span class="sr-only">50% Complete</span> </div>
+                        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%; height:6px;"> <span class="sr-only">50% Complete</span> </div>
                       </div>
-                      <h5 class="m-t-3">Losses <span class="pull-right">90%</span></h5>
+                      <h5 class="m-t-3">Losses <span class="pull-right">N/A</span></h5>
                       <div class="progress">
-                        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width:90%; height:6px;"> <span class="sr-only">50% Complete</span> </div>
+                        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%; height:6px;"> <span class="sr-only">50% Complete</span> </div>
                       </div>
                      </div>
                   </div>
                 </div>
-                <div class="tab-pane" id="settings" role="tabpanel">
+                <div class="tab-pane" id="settings" role="tabpanel" aria-expanded="true">
                   <div class="card-body">
                     <form class="form-horizontal form-material" method="POST" action="<?= htmlentities($_SERVER['PHP_SELF']);?>">
                       <div class="form-group">
@@ -416,96 +477,8 @@ $dbc->close();
                     </form>
                   </div>
                 </div>
-                <!--Fourth Pane -->
-                 <div class="tab-pane" id="security" role="tabpanel">
-                  <div class="card-body">
-                     <a name="changePassword"></a>
-                    <form class="form-horizontal form-material" method="POST" action="<?= htmlentities($_SERVER['PHP_SELF']);?>">
-                     
-                      <div class="form-group">
-                        <label class="col-md-12">Password</label>
-                        <div class="col-md-12">
-                          <input placeholder="Enter new password" class="form-control form-control-line" type="password" name="ePass" pattern="(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).{8,}" title="password must contain atleast 1 digit, atleast 1 uppercase letter, atleast 1 lowercase letter and minimum of 8 characters in all"><span class="note"><small>atleast 1 digit, atleast 1 uppercase letter, atleast 1 lowercase letter and minimum of 8 characters in all</small></span>
-                          <span class="text-danger"><?php if(isset($passErr) && $passErr!==null){echo $passErr;} ?></span>
-                        </div>
-                      </div>
-                       <div class="form-group">
-                        <label class="col-md-12">Confirm Password</label>
-                        <div class="col-md-12">
-                          <input placeholder="Confirm password" class="form-control form-control-line" type="password" name="eCPass">
-                          <span class="note"><small>must match password entered in the box above</small></span>
-                            <span class="text-danger"><?php if(isset($cpassErr) && $cpassErr!==null){echo $cpassErr;} ?></span><br>
-                            <span class="text-danger"><?php if(isset($cpasses) && $cpasses!==null){echo $cpasses;} ?></span>
-                        </div>
-                      </div>            
-                      <div class="form-group">
-                        <div class="col-sm-12">
-                          <button type="submit" class="btn btn-success" name="uPwd">Update Password</button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                  <div class="col-md-12">
-                    <h5>2FA being rolled out shortly</h5>
-                  </div>
-                </div>
-
-                 <!--Fifth Pane -->
-                 <div class="tab-pane" id="wallet" role="tabpanel">
-                  <div class="card-body">
-                     <h4>Wallets and Addresses</h4>
-              <p>Use this section to fill-in external wallet address details</p>
-                    <form class="form-horizontal form-material" action="<?= htmlentities($_SERVER['PHP_SELF']);?>" method="POST">
-                       <div class="form-group">
-                        <div class="col-md-12">
-                          <input value="<?php if(isset($user_email) && $user_email!==null){echo $user_email;}?>" class="form-control form-control-line" name="eEmail" id="example-email" type="email" title="Your email is your username and cannot be changed after setting it" disabled hidden>
-                        </div>
-                      </div>
-                     <div class="form-group">
-                  <label for="exampleInputuname">Bitcoin<small>(BTC)</small></label>
-                  <div class="input-group">
-                    <input name="btc" class="form-control" id="exampleInputuname" placeholder="Bitcoin address" type="text" value="<?php if(isset($bitcoin) && $bitcoin!==null){echo $bitcoin;} ?>">
-                  </div>
-                </div>
-                      <div class="form-group">
-                  <label for="exampleInputuname">Ethereum<small>(ETH)</small></label>
-                  <div class="input-group">
-                    <input name="eth" class="form-control" id="exampleInputuname" placeholder="Ethereum address" type="text" value="<?php if(isset($ethereum) && $ethereum!==null){echo $ethereum;} ?>">
-                  </div>
-                </div>
-                        <div class="form-group">
-                  <label for="exampleInputuname">Binance<small>(BNB)</small></label>
-                  <div class="input-group">
-                    <input name="bnb" class="form-control" id="exampleInputuname" placeholder="Binance address" type="text" value="<?php if(isset($binance) && $binance!==null){echo $binance;} ?>">
-                  </div>
-                </div>     
-
-                 <div class="form-group">
-                  <label for="exampleInputuname">Tether<small>(USDT)</small></label>
-                  <div class="input-group">
-                    <input name="usdt" class="form-control" id="exampleInputuname" placeholder="Binance address" type="text" value="<?php if(isset($usdt) && $usdt!==null){echo $usdt;} ?>">
-                  </div>
-                </div>  
-
-                <div class="form-group">
-                  <!-- <label for="exampleInputuname">Token<small></small></label> -->
-                  <div class="input-group">
-                    <input name="token" class="form-control" id="exampleInputuname" placeholder="Earthminers token address" type="text" disabled hidden>
-                  </div>
-                </div>         
-                      <div class="form-group">
-                        <div class="col-sm-12">
-                          <button type="submit" class="btn btn-success" name="uWallet">Update Wallet</button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                  <div class="col-md-12">
-                    <h5>More wallet options will be added</h5>
-                  </div>
-                </div>
-                <!--Sixth Pane -->
-                 <div class="tab-pane" id="upload" role="tabpanel">
+                    <!-- fourth pane -->
+                 <div class="tab-pane" id="upload" role="tabpanel" aria-expanded="true">
                   <div class="card-body">
                      <h4>Center For Member Uploads</h4>
                      <p>Upload profile photo</p>
@@ -551,10 +524,17 @@ $dbc->close();
 
 <!-- Toastr -->
 <script src="dist/js/toastr.min.js"></script>
+<script type="text/javascript">
+  if(screen.width<1000){
+    confirm("Your current device may need landscape orientation to view a few items");
+  }
+</script>
 </body>
 </html>
 
 <?php
 if(isset($toast) && $toast==='success'){echo "<script>toastr.success('You have updated your information', 'Success')</script>";}
 if(isset($toast) && $toast==='fail'){echo "<script>toastr.error('We could not update that information', 'Error')</script>";}
+
+$dbc->close();
 ?>

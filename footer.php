@@ -10,7 +10,7 @@
 <ul>
 <li class="wow  fadeInUp animated" data-wow-duration="1.3s" style="visibility: visible; animation-duration: 1.3s; animation-name: fadeInUp;"><a href="#"><i class="fa fa-facebook"></i></a></li>
 <li class="wow  fadeInUp animated" data-wow-duration="1.5s" style="visibility: visible; animation-duration: 1.5; animation-name: fadeInUp;"><a href="#"><i class="fa fa-twitter"></i></a></li>
-<li class="wow  fadeInUp animated" data-wow-duration="1.9s" style="visibility: visible; animation-duration: 1.9s; animation-name: fadeInUp;"><a href="#"><i class="fa fa-send-o"></i></a></li>
+<li class="wow  fadeInUp animated" data-wow-duration="1.9s" style="visibility: visible; animation-duration: 1.9s; animation-name: fadeInUp;"><a href="https://t.me/earthminers"><i class="fa fa-send-o"></i></a></li>
 <li class="wow  fadeInUp animated" data-wow-duration="2.1s" style="visibility: visible; animation-duration: 2.1s; animation-name: fadeInUp;"><a href="#"><i class="fa fa-bitcoin"></i></a></li>
 <li class="wow  fadeInUp animated" data-wow-duration="2.4s" style="visibility: visible; animation-duration: 2.4s; animation-name: fadeInUp;"><a href="mailto:hello@earthminers.com"><i class="fa fa-envelope"></i></a></li>
 </ul>
@@ -31,7 +31,7 @@
 			<div class="search_btm wow  fadeInUp animated" data-wow-duration="2.6s" style="visibility: visible; animation-duration: 2.6s; animation-name: fadeInUp;">
 				<span class="text-dark"><small><a href="https://earthminers.com">Earthminers</a> is a tech franchise that handles provision and deployment of development services and virtual server facilities for websites, VTU options, software and applications to end-users.<br>
 			There are promotional features included within the Earthminers marketplace from time to time, however, after your promotional period, if any is offered you, you automatically will be charged for a subscription on a monthly or annual basis (at your choice or as provided) unless you cancel. All credits expire after it’s stipulated period as stated.<br>
-			© 2020 - <?= date('Y');?>&nbsp;&nbsp;All Rights Reserved. We welcome a reproduction in part of our resources, however not for commercial purposes in which case, written permission from Netserver.com.ng is required.</small></span>
+			© 2019 - <?= date('Y');?>&nbsp;&nbsp;All Rights Reserved. We welcome a reproduction in part of our resources, however not for commercial purposes in which case, written permission from Earthminers.com is required.</small></span>
 			</div></div></div>
 		</div>
 	  </div>
@@ -61,7 +61,6 @@
 			<li><a href="docs/delivery-policy.php"><small>Delivery Policy</small></a></li>
 			<li><a href="docs/store-policy.php"><small>Store Policy</small></a></li>
 			<li><a href="docs/refund-policy.php"><small>Refunds</small></a></li>
-			<li><a href="docs/delivery-policy.php"><small>Delivery Policy</small></a></li>
 			<li><a href="docs/store-policy.php"><small>Store Policy</small></a></li>
 			<li><a href="docs/refund-policy.php"><small>Refunds</small></a></li>
 

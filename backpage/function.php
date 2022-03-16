@@ -42,3 +42,14 @@ function isAdmin(){
         return false;
     }
 }
+
+function total_amount_withdrawn(){
+    $total_withdrawn = "SELECT sum(wamount) AS withdrawTotal FROM `withdraw` WHERE `user_email`='$sessEmail' AND `wstatus`='Pending'";
+        $total_withdrawn_query = $dbc->query($total_withdrawn);
+        $total_withdrawn_display = mysqli_fetch_assoc($total_withdrawn_query);
+
+       if($total_withdrawn_display){
+        $sum_of_rows = $total_withdrawn_display['withdrawTotal']; 
+      }
+      if($sum_of_rows!==null){echo $sum_of_rows;}else{echo "0.00";}
+}

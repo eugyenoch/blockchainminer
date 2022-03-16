@@ -1,9 +1,15 @@
+<?php
+//Require my functions.php file
+include('function.php');
+//Begin cookie and include the cookie file
+include('include/cookie.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>Niche Admin - Powerful Bootstrap 4 Dashboard and Admin Template</title>
+<title>Compose Email | Earthminers App</title>
 <!-- Tell the browser to be responsive to screen width -->
 <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" />
 

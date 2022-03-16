@@ -59,20 +59,25 @@ if($_SERVER['REQUEST_METHOD']=="POST"){
 
 <?php
 if(isset($_POST['reg'])){
+  $affid = $_POST['affid'];
   if($pass===$cpass){
-  $sqlIns = "INSERT INTO people(firstname,lastname,user_email,user_pass)VALUES('$fname','$lname','$email','$cpass')";
-  $sqlC = $dbc->query($sqlIns);
+     $sql_check_email = "SELECT * FROM `people` WHERE `user_email` = '$email'";
+    $sql_check_email_exec = $dbc->query($sql_check_email);
+    if(mysqli_num_rows($sql_check_email_exec)>0){$toast = "email";}
+    else{
+    $sqlIns = "INSERT INTO people(firstname,lastname,user_email,user_pass,affid)VALUES('$fname','$lname','$email','$cpass','$affid')";
+    $sqlC = $dbc->query($sqlIns);
    
- if($sqlC){
-  $toast = "success";
-  header("Refresh:1,url=login.php");
-}else{$toast = "fail";} 
-}
+     if($sqlC){
+      $toast = "success";
+      header("Refresh:1,url=login.php");
+    }else{$toast = "fail";} 
+    }
 
-$sql_wallet_insert = "INSERT INTO wallet(user_email) VALUES('$email')";
-   $dbc->query($sql_wallet_insert);
+    $sql_wallet_insert = "INSERT INTO wallet(user_email) VALUES('$email')";
+    $dbc->query($sql_wallet_insert);
 }
- $dbc->close();
+}
 
 ?>
 
@@ -119,9 +124,12 @@ $sql_wallet_insert = "INSERT INTO wallet(user_email) VALUES('$email')";
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-box-body">
-    <h3 class="login-box-msg">Sign Up</h3>
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post" name="regForm" novalidate>
+    <h3 class="login-box-msg">
+        <span class="lead"><span class="lead text-black">Sign up for an<span class="text-primary"> <a href="https://www.earthminers.com">Earthminers</a></span> account</span>
+      </h3>
+    <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']);?>" method="post" name="regForm" novalidate>
       <div class="form-group has-feedback">
+        <input type="text" name="affid" value="<?= mt_rand(100000,999999);?>" class="form-control sty1" hidden /><br>
         <input type="text" name="fname" class="form-control sty1" placeholder="Firstname" required />
         <span class="err"><?= $fnameErr; ?></span>
       </div>
@@ -188,4 +196,9 @@ if(isset($toast) && $toast==='success'){
 if(isset($toast) && $toast==='fail'){
   echo "<script>toastr.error('You have not been successfully registered', 'Failure')</script>";
 }
+
+if(isset($toast) && $toast==='email'){
+  echo "<script>toastr.error('The email already exists', 'Failure')</script>";
+}
+$dbc->close();
 ?>

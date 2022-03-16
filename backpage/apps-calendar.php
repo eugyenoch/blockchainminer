@@ -1,3 +1,9 @@
+<?php
+//Require my functions.php file
+include('function.php');
+//Begin cookie and include the cookie file
+include('include/cookie.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

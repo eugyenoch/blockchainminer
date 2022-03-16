@@ -75,7 +75,9 @@ else{
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-box-body">
-    <h3 class="login-box-msg">Sign In</h3>
+    <h3 class="login-box-msg m-b-2">
+        <span class="lead text-black">Sign in to begin your<span class="text-primary"> Session</span></span>
+    </h3>
     <form action="<?php htmlentities($_SERVER['PHP_SELF']);?>" method="post" name="loginForm">
       <div class="form-group has-feedback">
         <input type="email" class="form-control sty1" placeholder="Username" name="user" title="Username is required" value="<?php if(isset($_COOKIE['email'])){echo $_COOKIE['email'];}?>" required>
